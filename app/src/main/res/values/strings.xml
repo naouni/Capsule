@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">TimeCapsule</string>
+    <string-array name="Contacts">
+        <item>Nordine</item>
+        <item>Bob</item>
+        <item>Julien</item>
+        <item>Nesreen</item>
+        <item>Marvin</item>
+        <item>Karim</item>
+        <item>Samuel</item>
+        <item>Guillaume</item>
+        <item>Anthony</item>
+    </string-array>
+
+    // Strings over log in
+    <string name="title_activity_login">Sign in</string>
+    <string name = "auth_failed">Authentication failed</string>
+
+
+    // String over
+    <string name="title_activity_capsule">CapsuleActivity</string>
+
+    //Is this one still used ? //TODO
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    //Strings over the MainActivity's settings
+    <string name="action_settings">Settings</string>
+    <string name="action_signOut">Sign out</string>
+
+    //Strings over capsule_fragment_page
+    <string name="CapsuleMessageDefaultText"> Write your message.. </string>
+    <string name="AttachPicture"> Attach picture</string>
+    <string name="TakePicture"> Take picture</string>
+    <string name="CheckInButton"> Check In</string>
+    <string name="SendCapsuleButton"> Send Capsule </string>
+
+
+    <string name="Next">Next</string>
+
+</resources>

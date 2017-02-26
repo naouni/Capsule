@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id= "@+id/capsuleMessage"
+        android:layout_marginTop = "10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint = "@string/CapsuleMessageDefaultText"
+        android:layout_weight = "5"
+        android:layout_gravity="top"
+         />
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1">
+    <Button
+        android:id="@+id/attachPictureButton"
+        android:text = "@string/AttachPicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight = "1"
+        android:layout_gravity="left"/>
+
+    <Button
+        android:id="@+id/takePictureButton"
+        android:text = "@string/TakePicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/attachPictureButton"
+        android:layout_weight = "1"
+        android:layout_gravity="center"
+        />
+
+    <Button
+        android:id = "@+id/checkInButton"
+        android:text = "@string/CheckInButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/takePictureButton"
+        android:layout_weight = "1"
+        />
+</RelativeLayout>
+
+    <DatePicker
+        android:id="@+id/datePicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:endYear="2100"
+        android:startYear="1900"
+        android:datePickerMode="spinner"
+        android:calendarViewShown="false"
+        android:layout_weight="1" >
+    </DatePicker>
+
+    <Button
+        android:id = "@+id/sendCapsuleButton"
+        android:text ="@string/SendCapsuleButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight = "1"
+        />
+
+</LinearLayout>
