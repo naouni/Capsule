@@ -19,6 +19,7 @@ public class ChatsListFragment extends Fragment {
     //TAG for this class
     private String TAG =  getClass().toString();
 
+
     //Adapter connected to the array to display the contacts
     private ChatsListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
