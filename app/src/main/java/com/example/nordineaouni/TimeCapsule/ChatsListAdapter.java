@@ -27,8 +27,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     String TAG = getClass().toString();
 
     private FirebaseAuth mAuth;
-    private DatabaseReference mMetadataRef;
-    private DatabaseReference mContactsRef;
+    private DatabaseReference metadataRef;
+    private DatabaseReference contactsRef;
 
     private Context context;
     private ArrayList<String> interlocutorIDs;
@@ -39,14 +39,14 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        TextView mNameTextView;
-        public TextView mDateTextView;
+
+        private TextView nameTextView;
+        private TextView dateTextView;
 
         public ViewHolder(View view, TextView name, TextView date) {
             super(view);
-            mNameTextView = name;
-            mDateTextView = date;
+            nameTextView = name;
+            dateTextView = date;
         }
     }
 
@@ -57,8 +57,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         contacts = new HashMap<String, String>();
 
         mAuth = FirebaseAuth.getInstance();
-        mMetadataRef = FirebaseDatabase.getInstance().getReference().child("messagesMetadata").child(mAuth.getCurrentUser().getUid());
-        mContactsRef = FirebaseDatabase.getInstance().getReference().child("contacts").child(mAuth.getCurrentUser().getUid());
+        metadataRef = FirebaseDatabase.getInstance().getReference().child("messagesMetadata").child(mAuth.getCurrentUser().getUid());
+        contactsRef = FirebaseDatabase.getInstance().getReference().child("contacts").child(mAuth.getCurrentUser().getUid());
 
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
@@ -104,7 +104,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                 Log.w(TAG, "postComments:onCancelled", databaseError.toException());
             }
         };
-        mMetadataRef.addChildEventListener(childEventListener);
+        metadataRef.addChildEventListener(childEventListener);
 
         ValueEventListener contactsListener = new ValueEventListener() {
             @Override
@@ -122,7 +122,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
                 Log.w(TAG, "loadContacts:onCancelled", databaseError.toException());
             }
         };
-        mContactsRef.addValueEventListener(contactsListener);
+        contactsRef.addValueEventListener(contactsListener);
 
     }
 
@@ -153,8 +153,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         String name = contacts.get(interlocutorIDs.get(position));
 
         //Set the textfields to the proper value
-        viewHolder.mNameTextView.setText(name);
-        viewHolder.mDateTextView.setText(dates.get(position));
+        viewHolder.nameTextView.setText(name);
+        viewHolder.dateTextView.setText(dates.get(position));
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -162,4 +162,5 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     public int getItemCount() {
         return interlocutorIDs.size();
     }
+
 }

@@ -24,7 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
  * Created by nordineaouni on 03/01/17.
  */
 
-public class MainActivity extends AppCompatActivity implements CapsuleFragment.CapsulePageFragmentListener, AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements CapsuleFragment.CapsulePageFragmentListener, ChatsListFragment.OnChatsListClickListener, AdapterView.OnItemClickListener {
 
     private String TAG = getClass().toString();
 
@@ -124,11 +124,16 @@ public class MainActivity extends AppCompatActivity implements CapsuleFragment.C
         mImageView.setImageBitmap(imageBitmap);
     }
 
-
+    //Interface method TODO: is it still used ?
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         //TODO
         Toast.makeText(this, "item "+ position+" clicked", Toast.LENGTH_SHORT).show();
     }
 
+    //Interface method to communicate with the chatsListFragment
+    @Override
+    public void OnChatClick() {
+        //TODO: launch intent to chat activity
+    }
 }
