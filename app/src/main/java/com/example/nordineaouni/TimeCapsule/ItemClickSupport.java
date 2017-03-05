@@ -12,6 +12,7 @@ import android.view.View;
  */
 
 public class ItemClickSupport {
+
     private final RecyclerView mRecyclerView;
     private OnItemClickListener mOnItemClickListener;
     private OnItemLongClickListener mOnItemLongClickListener;
@@ -24,6 +25,7 @@ public class ItemClickSupport {
             }
         }
     };
+
     private View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
@@ -34,6 +36,7 @@ public class ItemClickSupport {
             return false;
         }
     };
+
     private RecyclerView.OnChildAttachStateChangeListener mAttachListener
             = new RecyclerView.OnChildAttachStateChangeListener() {
         @Override
@@ -52,6 +55,8 @@ public class ItemClickSupport {
         }
     };
 
+
+    //Constructor
     private ItemClickSupport(RecyclerView recyclerView) {
         mRecyclerView = recyclerView;
         mRecyclerView.setTag(R.id.item_click_support, this);

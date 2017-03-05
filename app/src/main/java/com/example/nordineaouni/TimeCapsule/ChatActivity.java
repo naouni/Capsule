@@ -1,5 +1,6 @@
 package com.example.nordineaouni.TimeCapsule;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
+    private ChatAdapter chatAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,6 +24,12 @@ public class ChatActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
         layoutManager = new LinearLayoutManager(this);
+        Intent intent = getIntent();//Get the intent that started this activity(see ChatsListFragment.onCreateView())
+        String conversationID = intent.getStringExtra("conversationID");
+        chatAdapter = new ChatAdapter(conversationID);
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(chatAdapter);
 
     }
 }

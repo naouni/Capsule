@@ -17,6 +17,9 @@
         <activity
             android:name=".MainActivity"
             android:label="TimeCapsule">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -26,16 +29,15 @@
                     <action android:name="android.intent.action.MAIN" />
                     <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <activity
             android:name=".DeliveryDateTimeActivity"
             android:label="TimeCapsule">
-              <intent-filter>
-                   <action android:name="android.intent.action.MAIN" />
-                   <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        </activity>
+
+        <activity android:name=".ChatActivity"
+            android:parentActivityName=".MainActivity">
         </activity>
     </application>
 

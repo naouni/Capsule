@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,8 +62,12 @@ public class ChatsListFragment extends Fragment  {
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        //TODO: launch chat activity
-                        //Needs messages content, time and sender
+
+                        //Launch an instance of ChatActivity to display the chosen conversation
+                        Intent intent = new Intent(getContext(), ChatActivity.class);
+                        Conversation conversation = adapter.getConversation(position);
+                        intent.putExtra("conversationID", conversation.getInterlocutorID());//Note at that point interlocutorID also design the conversationID
+                        startActivity(intent);
                     }
                 });
 
