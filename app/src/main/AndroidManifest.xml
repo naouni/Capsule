@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.nordineaouni.TimeCapsule">
+    package="com.example.nordineaouni.Capsule">
 
 
     <uses-feature android:name="android.hardware.camera"
@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.nordineaouni.Capsule.MainActivity"
             android:label="TimeCapsule">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".LogInActivity"
+            android:name="com.example.nordineaouni.Capsule.LogInActivity"
             android:label="Wrong">
             <intent-filter>
                     <action android:name="android.intent.action.MAIN" />
@@ -32,12 +32,12 @@
         </activity>
 
         <activity
-            android:name=".DeliveryDateTimeActivity"
+            android:name="com.example.nordineaouni.Capsule.DeliveryDateTimeActivity"
             android:label="TimeCapsule">
         </activity>
 
-        <activity android:name=".ChatActivity"
-            android:parentActivityName=".MainActivity">
+        <activity android:name="com.example.nordineaouni.Capsule.ChatActivity"
+            android:parentActivityName="com.example.nordineaouni.Capsule.MainActivity">
         </activity>
     </application>
 
