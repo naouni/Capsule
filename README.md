@@ -1,2 +1,2 @@
 # Capsule
-The official TimeCapsule android app repository.
+The official Capsule android app repository.
