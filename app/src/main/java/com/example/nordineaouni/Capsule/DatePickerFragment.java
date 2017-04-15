@@ -15,6 +15,12 @@ import java.util.Calendar;
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
 
+    ChatActivity callBack;
+
+    public DatePickerFragment(ChatActivity callBack){
+        this.callBack = callBack;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Use the current date as the default date in the picker
@@ -28,6 +34,8 @@ public class DatePickerFragment extends DialogFragment
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        // Do something with the date chosen by the user
+
+        // Pass the chosen date to the callBack function
+        callBack.onDateSet(year, month, day);
     }
 }

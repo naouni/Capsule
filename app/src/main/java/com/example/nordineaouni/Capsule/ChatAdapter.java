@@ -1,5 +1,6 @@
 package com.example.nordineaouni.Capsule;
 
+
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,7 +18,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -85,18 +91,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
-
-                // A comment has changed, use the key to determine if we are displaying this
-                // comment and if so remove it.
-                String commentKey = dataSnapshot.getKey();
-
-                // ...
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
                 Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
-
             }
 
             @Override
@@ -125,12 +124,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         // create a new view
-       /* View rowView  = (View) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.message, parent, false);
-        //Get the refrence of the textViews displaying the sender name and the capsule's content
-        TextView text = (TextView) rowView.findViewById(R.id.capsuleTextTextView);
-        TextView senderName = (TextView) rowView.findViewById(R.id.messageSenderName);*/
-
         View rowView  = (View) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.capsule, parent, false);
         TextView text = (TextView) rowView.findViewById(R.id.txtMessage);
@@ -173,12 +166,38 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         }
 
         //Get the capsule's content and the sender's name
-        String text = capsulesList.get(position).getText();
-        String senderID = capsulesList.get(position).getSenderID();
+        Capsule capsule = capsulesList.get(position);
+        String text = capsule.getText();
+        String senderID = capsule.getSenderID();
         String senderName = contactsList.get(senderID);
-        //Set textViewss' content
-        holder.textTextView.setText(text);
-        holder.senderTextView.setText(senderName);
+
+        //Date and time information
+        Calendar c = Calendar.getInstance();
+        Date todayDate = c.getTime();
+        String openingDateString = capsule.getOpeningDate();
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date openingDate = null;
+        try {
+            //Get Date object from the date string
+            openingDate = dateFormatter.parse(openingDateString);
+        }catch (ParseException e1){
+            e1.printStackTrace();//Handle parse exception
+        }
+
+        Log.d(TAG, "Today: "+todayDate.toString());
+        Log.d(TAG, "OpeningDate: "+openingDate.toString() );
+        //TODO: check if date and time requirements are met
+        if(todayDate.compareTo(openingDate) >= 0  ){
+            //todayDate is after or equal to OpeningDate
+            //TODO: show content
+            holder.senderTextView.setText(senderName);
+            holder.textTextView.setText(text);
+
+        }else {
+            //TODO: hide capsule's content
+            holder.senderTextView.setText(senderName);
+            holder.textTextView.setText("????????");
+        }
 
     }
 

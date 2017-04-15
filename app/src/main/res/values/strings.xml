@@ -1,27 +1,14 @@
 <resources>
-    <string name="app_name">TimeCapsule</string>
-    <string-array name="Contacts">
-        <item>Nordine</item>
-        <item>Bob</item>
-        <item>Julien</item>
-        <item>Nesreen</item>
-        <item>Marvin</item>
-        <item>Karim</item>
-        <item>Samuel</item>
-        <item>Guillaume</item>
-        <item>Anthony</item>
-    </string-array>
+    <string name="app_name">Capsule</string>
 
     // Strings over log in
     <string name="title_activity_login">Sign in</string>
     <string name = "auth_failed">Authentication failed</string>
+    <string name = "LogInActivityLabel">Log in</string>
 
 
     // String over
     <string name="title_activity_capsule">CapsuleActivity</string>
-
-    //Is this one still used ? //TODO
-    <string name="section_format">Hello World from section: %1$d</string>
 
     //Strings over the MainActivity's settings
     <string name="action_settings">Settings</string>

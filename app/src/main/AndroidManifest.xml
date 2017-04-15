@@ -16,7 +16,7 @@
 
         <activity
             android:name="com.example.nordineaouni.Capsule.MainActivity"
-            android:label="TimeCapsule">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -24,7 +24,7 @@
 
         <activity
             android:name="com.example.nordineaouni.Capsule.LogInActivity"
-            android:label="Wrong">
+            android:label="@string/LogInActivityLabel">
             <intent-filter>
                     <action android:name="android.intent.action.MAIN" />
                     <category android:name="android.intent.category.LAUNCHER" />
@@ -33,17 +33,13 @@
 
         <activity
             android:name="com.example.nordineaouni.Capsule.DeliveryDateTimeActivity"
-            android:label="TimeCapsule">
+            android:label="@string/app_name">
         </activity>
 
         <activity android:name="com.example.nordineaouni.Capsule.ChatActivity"
             android:parentActivityName="com.example.nordineaouni.Capsule.MainActivity">
         </activity>
     </application>
-
-
-
-
 
 
 

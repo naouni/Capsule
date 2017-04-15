@@ -9,12 +9,13 @@ public class Capsule {
     private String  text;
     private String senderID;
     private String sentDate;
-    private String openingDate;
+    private String openingDate;//The date also contains the time information
     //TODO: ArrayList<String> pictureIDs
 
     public Capsule(){
         //Used by Firebase, do not delete
     }
+
 
     public Capsule(String text, String senderID, String sentDate, String openingDate){
         this.text = text;
