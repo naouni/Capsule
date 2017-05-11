@@ -82,11 +82,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
 
-                // A comment has changed, use the key to determine if we are displaying this
-                // comment and if so remove it.
+                //TODO:handle deletion
                 String commentKey = dataSnapshot.getKey();
-
-                // ...
             }
 
             @Override

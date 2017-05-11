@@ -186,15 +186,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         Log.d(TAG, "Today: "+todayDate.toString());
         Log.d(TAG, "OpeningDate: "+openingDate.toString() );
-        //TODO: check if date and time requirements are met
+
+        //Checks if date and time requirement are met
         if(todayDate.compareTo(openingDate) >= 0  ){
             //todayDate is after or equal to OpeningDate
             //TODO: show content
             holder.senderTextView.setText(senderName);
             holder.textTextView.setText(text);
-
+        //Hide the capsule's content
         }else {
-            //TODO: hide capsule's content
+            //TODO: improve the way the content is hidden
             holder.senderTextView.setText(senderName);
             holder.textTextView.setText("????????");
         }
