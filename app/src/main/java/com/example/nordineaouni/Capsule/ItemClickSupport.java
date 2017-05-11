@@ -7,7 +7,7 @@ import android.view.View;
  * Created by nordineaouni on 01/03/17.
  * Implementation done by Hugo Visser, this piece of code was distributed freely.
  * (see http://www.littlerobots.nl/blog/Handle-Android-RecyclerView-Clicks/) visited on March, 1st 2017.
- * Explaination can be found here in Daniel Segato's answer:
+ * Explanation can be found here in Daniel Segato's answer:
  * (http://stackoverflow.com/questions/24885223/why-doesnt-recyclerview-have-onitemclicklistener-and-how-recyclerview-is-dif?rq=1)
  */
 

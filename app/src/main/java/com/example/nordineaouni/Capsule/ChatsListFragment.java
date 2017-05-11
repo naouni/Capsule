@@ -3,12 +3,14 @@ package com.example.nordineaouni.Capsule;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 
 /**
@@ -52,7 +54,7 @@ public class ChatsListFragment extends Fragment  {
         View view = inflater.inflate(R.layout.chats_list_fragment_page, container, false);
 
         //Get the recyclerView and set its adapter. Adapter is created in onCreate()
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.chatsListRecyclerView);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         ItemClickSupport.addTo(recyclerView)
@@ -63,10 +65,21 @@ public class ChatsListFragment extends Fragment  {
                         //Launch an instance of ChatActivity to display the chosen conversation
                         Intent intent = new Intent(getContext(), ChatActivity.class);
                         Conversation conversation = adapter.getConversation(position);
-                        intent.putExtra("conversationID", conversation.getInterlocutorID());//Note at that point interlocutorID also design the conversationID
+                        intent.putExtra("conversationID", conversation.getInterlocutorID());//Note at that point interlocutorID also defines the conversationID
                         startActivity(intent);
                     }
                 });
+
+        //Button to create a new activity
+        FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.floatingActionButton);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Todo: launch a new activity to create a new conversation
+                Intent newChatIntent =  new Intent(getContext(), NewChatActivity.class );
+                startActivity(newChatIntent);
+            }
+        });
 
         return view;
     }
@@ -80,6 +93,7 @@ public class ChatsListFragment extends Fragment  {
     public void onAttach(Context context) {
         super.onAttach(context);
 
+        //TODO: I think that this is not used. I use ItemClickSupport's implementation instead
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {

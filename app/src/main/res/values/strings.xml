@@ -1,27 +1,31 @@
 <resources>
     <string name="app_name">Capsule</string>
 
-    // Strings over log in
+    <!-- Strings over log in -->
     <string name="title_activity_login">Sign in</string>
-    <string name = "auth_failed">Authentication failed</string>
-    <string name = "LogInActivityLabel">Log in</string>
+    <string name="auth_failed">Authentication failed</string>
+    <string name="LogInActivityLabel">Log in</string>
 
 
-    // String over
+    <!--TODO:is it still used ?-->
     <string name="title_activity_capsule">CapsuleActivity</string>
 
-    //Strings over the MainActivity's settings
+    <!-- Strings over the MainActivity's settings -->
     <string name="action_settings">Settings</string>
     <string name="action_signOut">Sign out</string>
 
-    //Strings over capsule_fragment_page
+    <!-- Strings over capsule_fragment_page -->
     <string name="CapsuleMessageDefaultText"> Write your message.. </string>
     <string name="AttachPicture"> Attach picture</string>
     <string name="TakePicture"> Take picture</string>
     <string name="CheckInButton"> Check In</string>
     <string name="SendCapsuleButton"> Send Capsule </string>
 
+    <!-- Search bar -->
+    <string name="search_hint">Search contacts</string>
+
 
     <string name="Next">Next</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>
