@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -48,6 +49,7 @@ public class ChatActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private DatabaseReference numberCapsulesRef;
     private DatabaseReference convContentsRef;
+    private DatabaseReference conversationsListRef;
 
 
     @Override
@@ -55,13 +57,36 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_activity);
 
-        //Get the intent that started this activity(see ChatsListFragment.onCreateView())
+        //Get the intent that started this activity(see for instance ChatsListFragment.onCreateView())
         Intent intent = getIntent();
-        String conversationID = intent.getStringExtra("conversationID");//The id of the displayed conversation
+        final String conversationID = intent.getStringExtra("conversationID");//The id of the displayed conversation
 
         auth = FirebaseAuth.getInstance();
         numberCapsulesRef = FirebaseDatabase.getInstance().getReference().child("conversations").child(auth.getCurrentUser().getUid()).child(conversationID).child("numberCapsules");
         convContentsRef = FirebaseDatabase.getInstance().getReference().child("conversationsContents").child(auth.getCurrentUser().getUid()).child(conversationID);
+        conversationsListRef = FirebaseDatabase.getInstance().getReference().child("conversations").child(auth.getCurrentUser().getUid());
+
+        //Add a listener on the list of conversations
+        conversationsListRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (! snapshot.hasChild(conversationID)) {
+                    // The conversation does not exist yet (in the database). So we instantiate it.
+
+                    String dateLastSent = "";
+                    String closestOpening = "";
+                    String interlocutorId = conversationID;
+                    Long conversationNumber = 0L;
+                    Conversation conversation = new Conversation(dateLastSent, closestOpening, interlocutorId, conversationNumber);
+                    conversationsListRef.child(conversationID).setValue(conversation);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.chatRecyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);

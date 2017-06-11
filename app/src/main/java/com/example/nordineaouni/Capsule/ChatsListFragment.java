@@ -7,7 +7,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,7 +23,7 @@ import android.widget.Button;
 public class ChatsListFragment extends Fragment  {
 
     //TAG for this class
-    private String TAG =  getClass().toString();
+    private String TAG = getClass().toString();
 
     //Interface to communicate with the main activity
     public interface OnChatsListClickListener {
@@ -34,9 +37,9 @@ public class ChatsListFragment extends Fragment  {
     private RecyclerView.LayoutManager layoutManager;
 
 
+    //I don't exactly remember why but it was more convenient not to use a constructor
     public static ChatsListFragment newInstance() {
-        ChatsListFragment chatsListFragment = new ChatsListFragment();
-        return chatsListFragment;
+        return new ChatsListFragment();
     }
 
     @Override
@@ -44,7 +47,8 @@ public class ChatsListFragment extends Fragment  {
         super.onCreate(savedInstanceState);
 
         layoutManager = new LinearLayoutManager(getContext());
-        adapter = new ChatsListAdapter(getContext());
+        adapter = new ChatsListAdapter();
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -75,13 +79,38 @@ public class ChatsListFragment extends Fragment  {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Todo: launch a new activity to create a new conversation
                 Intent newChatIntent =  new Intent(getContext(), NewChatActivity.class );
                 startActivity(newChatIntent);
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.menu_chatslist_fragment, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+
+        SearchView searchView = (SearchView) menu.findItem(R.id.search_chatslist_fragment).getActionView();
+
+        //Attach a listener to the SearchView that will call the filtering function of the adapter
+        // as the user types
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //Filter the results using the adapter's method
+                adapter.filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //Filter the results using the adapter's method
+                adapter.filter(newText);
+                return false;
+            }
+        });
     }
 
     @Override

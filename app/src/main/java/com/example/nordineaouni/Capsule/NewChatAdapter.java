@@ -1,116 +1,126 @@
 package com.example.nordineaouni.Capsule;
 
-import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by nordineaouni on 21/04/17.
  */
 
-public class NewChatAdapter extends BaseAdapter implements Filterable {
+public class NewChatAdapter extends RecyclerView.Adapter<NewChatAdapter.ViewHolder> implements Filterable {
 
 
-    private List<String> contactsList;
-    private List<String> filteredContactsList;
-    private LayoutInflater mInflater;
-    private ItemFilter mFilter = new ItemFilter();
+    private final String TAG = getClass().toString();
 
-    public NewChatAdapter(Context context, List<String> data) {
-        this.filteredContactsList = data ;
-        this.contactsList = data ;
-        mInflater = LayoutInflater.from(context);
-    }
+    private List<String> contactsIdList;
+    private Map<String,String> contactsMap;
+    private List<String> filteredContactsIdList;
+    private ItemFilter filter;
 
-    //Perfoms filtering using the mFilter instance field
-    public void filter(CharSequence constraint){
-        mFilter.publishResults(constraint, mFilter.performFiltering(constraint));
-    }
+    public NewChatAdapter() {
+        filter = new ItemFilter();
+        filteredContactsIdList = new ArrayList<String>();
 
-    public int getCount() {
-        return filteredContactsList.size();
-    }
+        //Get access to the current user's contact list
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        DatabaseReference contactsRef = FirebaseDatabase.getInstance().getReference().child("contacts").child(auth.getCurrentUser().getUid());
 
-    public Object getItem(int position) {
-        return filteredContactsList.get(position);
+        contactsRef.addValueEventListener( new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Log.d(TAG, "ContactsRef onDataChange");
+                //Key: UID, Value: user name
+                contactsMap = (HashMap<String,String>) dataSnapshot.getValue();
+
+                //Convert the contacts info from a map to a list
+                String[] contactsArray = (String[]) contactsMap.keySet().toArray(new String[0]); //The empty array of string ensures a proper casting
+                contactsIdList = new ArrayList<String>(Arrays.asList(contactsArray));
+
+                //Update the filteredContactsIdList used to display the contacts' names on screen
+                filteredContactsIdList = contactsIdList;
+
+                //Notify the observer(s) (i.e. the listView) to refresh
+                NewChatAdapter.this.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadContacts:onCancelled", databaseError.toException());
+            }
+        });
     }
 
     public long getItemId(int position) {
         return position;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
-        // A ViewHolder keeps references to children views to avoid unnecessary calls
-        // to findViewById() on each row.
-        ViewHolder holder;
-
-        // When convertView is not null, we can reuse it directly, there is no need
-        // to reinflate it. We only inflate a new View when the convertView supplied
-        // by ListView is null.
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.search_result_item, null);
-
-            // Creates a ViewHolder and store references to the two children views
-            // we want to bind data to.
-            holder = new ViewHolder();
-            holder.text = (TextView) convertView.findViewById(R.id.contactName);
-
-            // Bind the data efficiently with the holder.
-            convertView.setTag(holder);//TODO: What does this line ?
-        } else {
-            // Get the ViewHolder back to get fast access to the TextView
-            // and the ImageView.
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        // If weren't re-ordering this you could rely on what you set last time
-        holder.text.setText(filteredContactsList.get(position));
-
-        return convertView;
+    public String getContactId(int position){
+        return contactsIdList.get(position);
     }
 
-    static class ViewHolder {
-        TextView text;
+    //Return the size of the dataset (invoked by the layout manager)
+    @Override
+    public int getItemCount() {
+        return filteredContactsIdList.size();
     }
 
     public Filter getFilter() {
-        return mFilter;
+        return filter;
     }
 
+    //Perfoms filtering using the filter instance field
+    public void filter(CharSequence constraint){
+        filter.publishResults(constraint, filter.performFiltering(constraint));
+    }
+
+    //2 private inner class. A viewHolder and an itemFilter
     private class ItemFilter extends Filter {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
 
+            //Set the searchPattern to lower case
             String searchPattern = constraint.toString().toLowerCase();
             FilterResults results = new FilterResults();
+            int numberOfContacts = contactsIdList.size();
 
-            //Base case where the search pattern is the empty string
+            //If the search pattern is the empty string
             if(searchPattern.equals("")){
-                Log.d("Filter","query is null");
-                results.values = contactsList;
-                results.count = contactsList.size();
+                results.values = contactsIdList;
+                results.count = numberOfContacts;
                 return results;
             }
 
-            int count = contactsList.size();
-            final ArrayList<String> filteredList = new ArrayList<String>(count);
+            final ArrayList<String> filteredList = new ArrayList<>(numberOfContacts);
 
-            for(String filterableString: contactsList) {
-                if (filterableString.toLowerCase().contains(searchPattern)) {
-                    filteredList.add(filterableString);
+            for(String contactId: contactsIdList) {
+                //We filter on the names
+                String contactName = contactsMap.get(contactId);
+                String filterableContactName = contactName.toLowerCase();
+                if (filterableContactName.contains(searchPattern)) {
+                    filteredList.add(contactId);//We still use id's internally.
                 }
             }
-
 
             results.values = filteredList;
             results.count = filteredList.size();
@@ -121,9 +131,50 @@ public class NewChatAdapter extends BaseAdapter implements Filterable {
         @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            filteredContactsList = (ArrayList<String>) results.values;
+            filteredContactsIdList = (ArrayList<String>) results.values;
             notifyDataSetChanged();
         }
+    }
 
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView contactName;
+        private ImageView contactPicture;
+
+        public ViewHolder(View rowView) {
+            super(rowView);
+            contactName = (TextView) rowView.findViewById(R.id.newChatContactName);
+            contactPicture = (ImageView) rowView.findViewById(R.id.newChatContactProfilePicture);
+        }
+    }
+
+    // Create new views (invoked by the layout manager)
+    @Override
+    public NewChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                          int viewType) {
+        // create a new view
+        View rowView  = (View) LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.new_chat_list_item, parent, false);
+
+        // Here I can set the view's size, margins, paddings and layout parameters
+
+        NewChatAdapter.ViewHolder viewHolder = new NewChatAdapter.ViewHolder(rowView);
+
+        return viewHolder;
+    }
+
+    //Replace the contents of a view (invoked by the layout manager)
+    @Override
+    public void onBindViewHolder(NewChatAdapter.ViewHolder viewHolder, int position) {
+        //Get element from your dataset at this position.
+        //Replace the contents of the view with that element
+
+        //Get the name of the sender from its UID
+        String contactId = filteredContactsIdList.get(position);
+        String contactName = contactsMap.get(contactId);
+
+        //Update the content of the row at position
+        viewHolder.contactName.setText(contactName);
+        //TODO: Update contact's picture as well
     }
 }

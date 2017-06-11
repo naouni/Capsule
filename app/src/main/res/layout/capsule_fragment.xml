@@ -8,7 +8,7 @@
         android:layout_marginTop = "10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint = "@string/CapsuleMessageDefaultText"
+        android:hint = "@string/capsuleMessageDefaultText"
         android:layout_weight = "5"
         android:layout_gravity="top"
          />
@@ -18,7 +18,7 @@
     android:layout_weight="1">
     <Button
         android:id="@+id/attachPictureButton"
-        android:text = "@string/AttachPicture"
+        android:text = "@string/attachPicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight = "1"
@@ -26,7 +26,7 @@
 
     <Button
         android:id="@+id/takePictureButton"
-        android:text = "@string/TakePicture"
+        android:text = "@string/takePicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/attachPictureButton"
@@ -36,7 +36,7 @@
 
     <Button
         android:id = "@+id/checkInButton"
-        android:text = "@string/CheckInButton"
+        android:text = "@string/checkInButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/takePictureButton"
@@ -57,7 +57,7 @@
 
     <Button
         android:id = "@+id/createCapsuleButton"
-        android:text ="@string/SendCapsuleButton"
+        android:text ="@string/sendCapsuleButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight = "1"

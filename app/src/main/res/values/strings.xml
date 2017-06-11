@@ -1,11 +1,18 @@
 <resources>
+
+    <!-- Naming Conventions:
+     1) Names start with lowercase letters
+     2) Underscores are only used to delimit different part of the address in name
+     3) Camel case is used for the suffix of the address, i.e. the name in itself.
+     e.g. activity_dummy_dummyName
+     -->
+
     <string name="app_name">Capsule</string>
 
     <!-- Strings over log in -->
     <string name="title_activity_login">Sign in</string>
     <string name="auth_failed">Authentication failed</string>
     <string name="LogInActivityLabel">Log in</string>
-
 
     <!--TODO:is it still used ?-->
     <string name="title_activity_capsule">CapsuleActivity</string>
@@ -15,17 +22,30 @@
     <string name="action_signOut">Sign out</string>
 
     <!-- Strings over capsule_fragment_page -->
-    <string name="CapsuleMessageDefaultText"> Write your message.. </string>
-    <string name="AttachPicture"> Attach picture</string>
-    <string name="TakePicture"> Take picture</string>
-    <string name="CheckInButton"> Check In</string>
-    <string name="SendCapsuleButton"> Send Capsule </string>
+    <string name="capsuleMessageDefaultText"> Write your message.. </string>
+    <string name="attachPicture"> Attach picture</string>
+    <string name="takePicture"> Take picture</string>
+    <string name="checkInButton"> Check In</string>
+    <string name="sendCapsuleButton"> Send Capsule </string>
 
     <!-- Search bar -->
     <string name="search_hint">Search contacts</string>
 
-
-    <string name="Next">Next</string>
+    <string name="next">Next</string>
     <string name="title_activity_maps">Map</string>
+
+    <!--Capsule Fragment's menu item -->
+    <string name="friends">Friends</string>
+
+    <!-- activity_friends -->
+    <string name="addFriends">Add Friends</string>
+    <string name="myFriends">My Friends</string>
+
+    <!-- menu_my_friends_activity -->
+    <string name="myFriendsSearchHint">Search friends</string>
+
+    <!-- Toast strings -->
+    <string name="youAreAlreadyFriendWith">You are already friend with</string>
+    <string name="friendAdded">Friend added !</string>
 
 </resources>

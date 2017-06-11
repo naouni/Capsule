@@ -8,6 +8,9 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -50,6 +53,7 @@ public class CapsuleFragment extends Fragment implements View.OnClickListener{
         mAuth = FirebaseAuth.getInstance();
         mMessageTextRef = FirebaseDatabase.getInstance().getReference().child("messagesText").child(mAuth.getCurrentUser().getUid());
         mMetadataRef = FirebaseDatabase.getInstance().getReference().child("messagesMetadata").child(mAuth.getCurrentUser().getUid());
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -72,28 +76,6 @@ public class CapsuleFragment extends Fragment implements View.OnClickListener{
         return view;
     }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-      /* TODO ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-                String message = dataSnapshot.getValue(String.class);
-                EditText editText = (EditText) getView().findViewById(R.id.capsuleMessage);
-                editText.append("\n"+"updated to: "+message);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                Toast.makeText(getActivity(), "Failed to load post.",
-                        Toast.LENGTH_SHORT).show();
-            }
-        };
-        mMessageTextRef.addValueEventListener(postListener);*/
-    }
 
     @Override
     public void onAttach(Context context){
@@ -105,6 +87,26 @@ public class CapsuleFragment extends Fragment implements View.OnClickListener{
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement onCapsulePageFragmentListener");
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.menu_capsule_fragment, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.friends_capsule_fragment:
+                Intent intent = new Intent(getContext(), FriendsActivity.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
