@@ -11,6 +11,7 @@ import android.view.View;
  * Created by nordineaouni on 15/04/17.
  */
 
+//Required for the floating action button. (I don't recall why)
 public class ScrollAwareFABBehavior extends FloatingActionButton.Behavior {
 
 

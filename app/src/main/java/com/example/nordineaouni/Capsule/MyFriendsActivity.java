@@ -1,21 +1,18 @@
 package com.example.nordineaouni.Capsule;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-
-public class NewChatActivity extends AppCompatActivity {
+public class MyFriendsActivity extends AppCompatActivity {
 
     final String TAG = getClass().toString();
     NewChatAdapter adapter;
@@ -23,27 +20,19 @@ public class NewChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_chat);
+        setContentView(R.layout.activity_my_friends);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
         adapter = new NewChatAdapter();
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.newChatRecyclerView);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.myFriendsActivityRecyclerView);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         ItemClickSupport.addTo(recyclerView)
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-
-                        //TODO:Does it create a conversation when there is no message in the database?
-                        //Launch an instance of ChatActivity to display the chosen conversation
-                        Intent intent = new Intent(getBaseContext(), ChatActivity.class);
-                        String contactId = adapter.getContactId(position);
-                        //Note that at that point the interlocutorID field from the Conversation
-                        // class also defines the conversationID in the Firebase database.
-                        intent.putExtra("conversationID", contactId);
-                        startActivity(intent);
+                        //TODO: Do something here if needed
                     }
                 });
     }
@@ -51,14 +40,16 @@ public class NewChatActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_newchat_activity, menu);
+        inflater.inflate(R.menu.menu_my_friends_activity, menu);
 
 
-        SearchView searchView = (SearchView) menu.findItem(R.id.search_newchat_activity).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.menuMyFriendsActivity_search).getActionView();
+        Log.d(TAG, "HEY" );
+        Log.d(TAG, Boolean.toString(searchView==null) );
 
         //Attach a listener to the SearchView that will call the filtering function of the adapter
         // as the user types
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //Filter the results using the adapter's method
@@ -72,7 +63,7 @@ public class NewChatActivity extends AppCompatActivity {
                 adapter.filter(newText);
                 return false;
             }
-        });
+        });*/
 
         return true;
     }

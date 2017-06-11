@@ -1,11 +1,13 @@
 package com.example.nordineaouni.Capsule;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by nordineaouni on 25/02/17.
@@ -27,16 +30,12 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
 
     String TAG = getClass().toString();
 
-    private FirebaseAuth auth;
-    private DatabaseReference conversationsRef;
-    private DatabaseReference contactsRef;
-
     private ArrayList<Conversation> conversationsList;
-    private HashMap<String, String> contacts;//Todo: Use list of user instead
+    private List<Conversation> filteredConversationsList;
+    private HashMap<String, String> contacts;
+    private ItemFilter filter;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
+    //Inner class. Holds references to the field we have to update on each row
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView nameTextView;
@@ -49,14 +48,16 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         }
     }
 
-    public ChatsListAdapter(Context context) {
+    public ChatsListAdapter() {
 
         conversationsList = new ArrayList<Conversation>();
+        filteredConversationsList = conversationsList;
         contacts = new HashMap<String, String>();
+        filter = new ItemFilter();
 
-        auth = FirebaseAuth.getInstance();
-        conversationsRef = FirebaseDatabase.getInstance().getReference().child("conversations").child(auth.getCurrentUser().getUid());
-        contactsRef = FirebaseDatabase.getInstance().getReference().child("contacts").child(auth.getCurrentUser().getUid());
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        DatabaseReference conversationsRef = FirebaseDatabase.getInstance().getReference().child("conversations").child(auth.getCurrentUser().getUid());
+        DatabaseReference contactsRef = FirebaseDatabase.getInstance().getReference().child("contacts").child(auth.getCurrentUser().getUid());
 
         conversationsRef.addChildEventListener( new ChildEventListener() {
             @Override
@@ -101,7 +102,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         contactsRef.addValueEventListener( new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                Log.d(TAG, "ChatListAdapter contacts");
                 //Key: UID, Value: user name
                 contacts = (HashMap<String,String>) dataSnapshot.getValue();
 
@@ -142,8 +143,8 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
         //Replace the contents of the view with that element
 
         //Get the name of the sender from its UID
-        Conversation conversation = conversationsList.get(position);
-        String interlocutorName = contacts.get( conversation.getInterlocutorID() );
+        Conversation conversation = filteredConversationsList.get(position);
+        String interlocutorName = contacts.get(conversation.getInterlocutorID());
 
         //Set the textfields to the proper value
         viewHolder.nameTextView.setText(interlocutorName);
@@ -153,11 +154,58 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return conversationsList.size();
+        return filteredConversationsList.size();
     }
 
-    public Conversation getConversation(int index){
-        return conversationsList.get(index);
+    public Conversation getConversation(int position){
+        return conversationsList.get(position);//TODO: shouldn't this use the filtered list instead ?
+    }
+
+    //Perfoms filtering using the mFilter instance field
+    public void filter(CharSequence constraint){
+        filter.publishResults(constraint, filter.performFiltering(constraint));
+    }
+
+
+    private class ItemFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            //Set the searchPattern to lower case
+            String searchPattern = constraint.toString().toLowerCase();
+            FilterResults results = new FilterResults();
+            int numberOfConversations = conversationsList.size();
+
+            //If the search pattern is the empty string
+            if(searchPattern.equals("")){
+                results.values = conversationsList;
+                results.count = numberOfConversations;
+                return results;
+            }
+
+            final ArrayList<Conversation> filteredList = new ArrayList<>(numberOfConversations);
+
+            //Select matching conversation
+            for(Conversation conversation: conversationsList) {
+                String conversationName = contacts.get(conversation.getInterlocutorID());
+                String filterableConversationName = conversationName.toLowerCase();
+                if (filterableConversationName.contains(searchPattern)) {
+                    filteredList.add(conversation);
+                }
+            }
+
+            results.values = filteredList;
+            results.count = filteredList.size();
+
+            return results;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            filteredConversationsList = (ArrayList<Conversation>) results.values;
+            notifyDataSetChanged();
+        }
     }
 
 }

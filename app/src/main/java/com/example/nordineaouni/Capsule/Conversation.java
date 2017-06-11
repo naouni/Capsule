@@ -11,8 +11,16 @@ public class Conversation {
     private String interlocutorID;//userID of the interlocutor
     private Long numberCapsules;
 
+    //Empty constructor used by Firebase
     public Conversation (){
 
+    }
+
+    public Conversation(String dateLastSent, String dateClosestOpening, String interlocutorID, Long numberCapsules ){
+        this.dateLastSent = dateLastSent;
+        this.dateClosestOpening = dateClosestOpening;
+        this.interlocutorID = interlocutorID;
+        this.numberCapsules = numberCapsules;
     }
 
     public String getDateClosestOpening() {
