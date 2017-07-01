@@ -166,9 +166,7 @@ public class CapsuleFragment extends Fragment implements View.OnClickListener{
                 break;
 
             case R.id.checkInButton:
-                //TODO
-                //Check in a place
-
+                //TODO: Check in a place
                 break;
         }
     }

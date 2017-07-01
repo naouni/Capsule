@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements CapsuleFragment.C
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Toast.makeText(this,"Settings are not implemented yet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"Piss off, settings are not implemented yet...", Toast.LENGTH_SHORT).show();
                 return true;
 
             case R.id.action_signOut:

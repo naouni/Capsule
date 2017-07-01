@@ -39,10 +39,10 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         switch(position) {
             case 0: return ChatsListFragment.newInstance();
             case 1: return CapsuleFragment.newInstance();
-            case 2: return PageFragment.newInstance(position + 1);
+            case 2: return MapFragment.newInstance();
         }
 
-        return PageFragment.newInstance(position + 1);
+        return MapFragment.newInstance();
     }
 
     @Override
