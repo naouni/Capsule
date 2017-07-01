@@ -9,7 +9,7 @@
 
     <string name="app_name">Capsule</string>
 
-    <!-- Strings over log in -->
+    <!-- Strings over login -->
     <string name="title_activity_login">Sign in</string>
     <string name="auth_failed">Authentication failed</string>
     <string name="LogInActivityLabel">Log in</string>
@@ -32,6 +32,8 @@
     <string name="search_hint">Search contacts</string>
 
     <string name="next">Next</string>
+
+    <!-- Map Activity (just a dummy activity to test the Maps API)-->
     <string name="title_activity_maps">Map</string>
 
     <!--Capsule Fragment's menu item -->
@@ -47,5 +49,8 @@
     <!-- Toast strings -->
     <string name="youAreAlreadyFriendWith">You are already friend with</string>
     <string name="friendAdded">Friend added !</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
