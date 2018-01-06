@@ -3,8 +3,8 @@
     <!-- Naming Conventions:
      1) Names start with lowercase letters
      2) Underscores are only used to delimit different part of the address in name
-     3) Camel case is used for the suffix of the address, i.e. the name in itself.
-     e.g. activity_dummy_dummyName
+     3) Camel case is used within suffix of the address, i.e. the name in itself.
+     e.g. fileName_activity_stringPurpose, main_activity_title
      -->
 
     <string name="app_name">Capsule</string>
@@ -13,9 +13,6 @@
     <string name="title_activity_login">Sign in</string>
     <string name="auth_failed">Authentication failed</string>
     <string name="LogInActivityLabel">Log in</string>
-
-    <!--TODO:is it still used ?-->
-    <string name="title_activity_capsule">CapsuleActivity</string>
 
     <!-- Strings over the MainActivity's settings -->
     <string name="action_settings">Settings</string>
@@ -33,9 +30,6 @@
 
     <string name="next">Next</string>
 
-    <!-- Map Activity (just a dummy activity to test the Maps API)-->
-    <string name="title_activity_maps">Map</string>
-
     <!--Capsule Fragment's menu item -->
     <string name="friends">Friends</string>
 
@@ -46,11 +40,23 @@
     <!-- menu_my_friends_activity -->
     <string name="myFriendsSearchHint">Search friends</string>
 
+    <!-- DeliveryDateTimeActivity -->
+    <string name="deliveryDateTime_activity_label">Set opening date</string>
+    <string name="deliveryDateTime_activity_dateTitle">Date</string>
+    <string name="deliveryDateTime_activity_timeTitle">Time</string>
+
     <!-- Toast strings -->
     <string name="youAreAlreadyFriendWith">You are already friend with</string>
     <string name="friendAdded">Friend added !</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- MapActivity TODO: some of these can be deleted as they are used to show place APIs features -->
+    <string name="map_activity_label">Set location lock</string>
+    <string name="map_activity_radius">Radius: </string>
+    <string name="map_activity_distanceUnit"> Km</string>
+
+    <!-- Firebase node names -->
+    <string name="capsulesNode">capsules</string>
+    <string name="userCapsulesNode">userCapsules</string>
+
 
 </resources>

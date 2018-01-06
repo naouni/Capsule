@@ -1,6 +1,5 @@
 package com.example.nordineaouni.Capsule;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +14,7 @@ import android.view.View;
 public class MyFriendsActivity extends AppCompatActivity {
 
     final String TAG = getClass().toString();
-    NewChatAdapter adapter;
+    FriendsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +22,7 @@ public class MyFriendsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_friends);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
-        adapter = new NewChatAdapter();
+        adapter = new FriendsAdapter();
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.myFriendsActivityRecyclerView);
         recyclerView.setLayoutManager(layoutManager);
@@ -32,7 +31,7 @@ public class MyFriendsActivity extends AppCompatActivity {
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        //TODO: Do something here if needed
+                        //TODO: Do something here if needed such as showing friend's details
                     }
                 });
     }

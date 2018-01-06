@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -30,11 +29,13 @@ import static android.app.Activity.RESULT_OK;
 public class CapsuleFragment extends Fragment implements View.OnClickListener{
 
     final String TAG = getClass().toString();
-    CapsulePageFragmentListener mCallback;
+    CapsulePageFragmentListener callback;
 
-    private FirebaseAuth mAuth;
-    private DatabaseReference mMessageTextRef;
-    private DatabaseReference mMetadataRef;
+    private FirebaseAuth auth;
+
+    private EditText textField;
+
+
 
     //Interface to comunicate with the main activity
     public interface CapsulePageFragmentListener{
@@ -50,15 +51,16 @@ public class CapsuleFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAuth = FirebaseAuth.getInstance();
-        mMessageTextRef = FirebaseDatabase.getInstance().getReference().child("messagesText").child(mAuth.getCurrentUser().getUid());
-        mMetadataRef = FirebaseDatabase.getInstance().getReference().child("messagesMetadata").child(mAuth.getCurrentUser().getUid());
+        auth = FirebaseAuth.getInstance();
+        DatabaseReference messageTextRef = FirebaseDatabase.getInstance().getReference().child("messagesText").child(auth.getCurrentUser().getUid());
+        DatabaseReference metadataRef = FirebaseDatabase.getInstance().getReference().child("messagesMetadata").child(auth.getCurrentUser().getUid());
         setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.capsule_fragment, container, false);
 
         Button sendButton = (Button) view.findViewById(R.id.createCapsuleButton);
@@ -73,6 +75,8 @@ public class CapsuleFragment extends Fragment implements View.OnClickListener{
         Button checkInButton = (Button) view.findViewById(R.id.checkInButton);
         checkInButton.setOnClickListener(this);
 
+        textField = (EditText) view.findViewById(R.id.capsuleMessage);
+
         return view;
     }
 
@@ -83,7 +87,7 @@ public class CapsuleFragment extends Fragment implements View.OnClickListener{
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception
         try {
-            mCallback = (CapsuleFragment.CapsulePageFragmentListener) context;
+            callback = (CapsuleFragment.CapsulePageFragmentListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + " must implement onCapsulePageFragmentListener");
@@ -105,6 +109,11 @@ public class CapsuleFragment extends Fragment implements View.OnClickListener{
                 startActivity(intent);
                 return true;
 
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(getActivity());
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -116,35 +125,13 @@ public class CapsuleFragment extends Fragment implements View.OnClickListener{
         switch (v.getId()) {
             case R.id.createCapsuleButton:
 
-               /*
-                //Create message metadata
-                String interlocutorID = "MlvVqCcuJDeF1myoa9MW5O1E0B52";
-                Calendar c = Calendar.getInstance();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                String sentDate = dateFormat.format(c.getTime());
-                //Get timePicker date as deliveryDate
-                DatePicker date = (DatePicker) getView().findViewById(R.id.datePicker);
-                int day = date.getDayOfMonth();
-                int month = date.getMonth()+1;
-                int year =  date.getYear();
-                String deliveryDate = Integer.toString(day)+"/"+Integer.toString(month)+"/"+Integer.toString(year);
+                //Launch the following activity and pass it the input text
+                Intent intentNewCapsule = new Intent(getContext(), DeliveryDateTimeActivity.class);
 
-                MessageMetadata metadata = new MessageMetadata( (long) 1, interlocutorID, sentDate, deliveryDate);
+                String text = textField.getText().toString();
+                intentNewCapsule.putExtra("text", text);
 
-                //Create message text
-                MessageText text = new MessageText(capsuleMessage.getText().toString());
-
-                //Create a unique key to reference both text and meta
-                String key =  mMetadataRef.push().getKey();
-                mMetadataRef.child(key).setValue(metadata);
-                mMessageTextRef.child(key).setValue(text);
-*/
-                Toast.makeText(getContext(), "Capsule sent", Toast.LENGTH_SHORT).show();
-
-                Log.d(TAG, "Before intent delivery");
-                Intent intent2 = new Intent(getContext(), DeliveryDateTimeActivity.class);
-                Log.d(TAG, "After intent delivery");
-                startActivity(intent2);
+                startActivity(intentNewCapsule);
                 break;
 
             case  R.id.attachPictureButton:
@@ -174,12 +161,10 @@ public class CapsuleFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1 && resultCode == RESULT_OK) {
+            //TODO: this was used to display taken picture into the right tab. No longer possible
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            /*ImageView mImageView = (ImageView) getView().findViewById(R.id.imageView);
-            mImageView.setImageBitmap(imageBitmap);*/
-
-            mCallback.onPictureTaken(imageBitmap);
+            callback.onPictureTaken(imageBitmap);
         }
     }
 

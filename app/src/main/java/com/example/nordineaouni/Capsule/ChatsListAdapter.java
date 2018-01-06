@@ -158,7 +158,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.View
     }
 
     public Conversation getConversation(int position){
-        return conversationsList.get(position);//TODO: shouldn't this use the filtered list instead ?
+        return filteredConversationsList.get(position);
     }
 
     //Perfoms filtering using the mFilter instance field

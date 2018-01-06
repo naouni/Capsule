@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 
+import java.lang.reflect.Method;
 import java.util.Calendar;
 
 /**
@@ -15,9 +16,13 @@ import java.util.Calendar;
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
 
-    ChatActivity callBack;
+    //The callBack has to implement the DatePickerDialog.OnDateSetListener interface. This interface
+    // only contains the method onDateSet.
+    DatePickerDialog.OnDateSetListener callBack;
 
-    public DatePickerFragment(ChatActivity callBack){
+
+    public DatePickerFragment(DatePickerDialog.OnDateSetListener callBack){
+        //Attach callBack
         this.callBack = callBack;
     }
 
@@ -29,13 +34,18 @@ public class DatePickerFragment extends DialogFragment
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
-        // Create a new instance of DatePickerDialog and return it
+        //Create a new instance of DatePickerDialog and return it.
         return new DatePickerDialog(getActivity(), this, year, month, day);
     }
 
+    /**
+     *  Method from the interface DatePickerDialog.OnDateSetListener. This method gets called when
+     *  the user click the set button of the datePicker dialog. Then, this method pass the date
+     *  information to its callBack which is an instance of ChatActivity. This instance of
+     *  ChatActivity will store the date and show a timePicker in order to continue the process.
+     */
     public void onDateSet(DatePicker view, int year, int month, int day) {
-
         // Pass the chosen date to the callBack function
-        callBack.onDateSet(year, month, day);
+        callBack.onDateSet(view, year, month, day);
     }
 }
