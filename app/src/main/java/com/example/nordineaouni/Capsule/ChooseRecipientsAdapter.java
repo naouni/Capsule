@@ -1,14 +1,17 @@
 package com.example.nordineaouni.Capsule;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -23,11 +26,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static android.os.Build.VERSION_CODES.M;
+
 /**
- * Created by nordineaouni on 21/04/17.
+ * Created by nordineaouni on 10/08/17.
  */
 
-public class NewChatAdapter extends RecyclerView.Adapter<NewChatAdapter.ViewHolder> implements Filterable {
+public class ChooseRecipientsAdapter extends RecyclerView.Adapter<ChooseRecipientsAdapter.ViewHolder> implements Filterable {
 
 
     private final String TAG = getClass().toString();
@@ -37,9 +43,21 @@ public class NewChatAdapter extends RecyclerView.Adapter<NewChatAdapter.ViewHold
     private List<String> filteredContactsIdList;
     private ItemFilter filter;
 
-    public NewChatAdapter() {
+
+    @NonNull
+    private OnItemCheckListener onItemCheckListener;
+
+    interface OnItemCheckListener {
+        void onItemCheck(String friendId);
+        void onItemUncheck(String friendId);
+        boolean shouldBeChecked(String friendId);
+    }
+
+    public ChooseRecipientsAdapter(@NonNull OnItemCheckListener onItemCheckListener) {
         filter = new ItemFilter();
         filteredContactsIdList = new ArrayList<String>();
+
+        this.onItemCheckListener = onItemCheckListener;
 
         //Get access to the current user's contact list
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -54,14 +72,15 @@ public class NewChatAdapter extends RecyclerView.Adapter<NewChatAdapter.ViewHold
                 contactsMap = (HashMap<String,String>) dataSnapshot.getValue();
 
                 //Convert the contacts info from a map to a list
-                String[] contactsArray = (String[]) contactsMap.keySet().toArray(new String[0]); //The empty array of string ensures a proper casting
+                //The empty array of string passed to the toArray() function ensures a proper casting
+                String[] contactsArray = (String[]) contactsMap.keySet().toArray(new String[0]);
                 contactsIdList = new ArrayList<String>(Arrays.asList(contactsArray));
 
                 //Update the filteredContactsIdList used to display the contacts' names on screen
                 filteredContactsIdList = contactsIdList;
 
                 //Notify the observer(s) (i.e. the listView) to refresh
-                NewChatAdapter.this.notifyDataSetChanged();
+                ChooseRecipientsAdapter.this.notifyDataSetChanged();
             }
 
             @Override
@@ -76,6 +95,7 @@ public class NewChatAdapter extends RecyclerView.Adapter<NewChatAdapter.ViewHold
     }
 
     public String getContactId(int position){
+        //TODO: shouldn't it be filteredContactsIdList here ?
         return contactsIdList.get(position);
     }
 
@@ -138,43 +158,71 @@ public class NewChatAdapter extends RecyclerView.Adapter<NewChatAdapter.ViewHold
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView contactName;
-        private ImageView contactPicture;
+        View rowView;
+        TextView contactName;
+        CheckBox checkBox;
 
         public ViewHolder(View rowView) {
             super(rowView);
-            contactName = (TextView) rowView.findViewById(R.id.newChatContactName);
-            contactPicture = (ImageView) rowView.findViewById(R.id.newChatContactProfilePicture);
+            this.rowView = rowView;
+            contactName = (TextView) rowView.findViewById(R.id.chooseRecipients_adapter_FriendTextView);
+            checkBox= (CheckBox) rowView.findViewById(R.id.chooseRecipients_adapter_checkBox);
         }
+
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public NewChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                          int viewType) {
+    public ChooseRecipientsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                        int viewType) {
         // create a new view
         View rowView  = (View) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.new_chat_list_item, parent, false);
+                .inflate(R.layout.adapter_choose_recipients_list_item, parent, false);
 
         // Here I can set the view's size, margins, paddings and layout parameters
 
-        NewChatAdapter.ViewHolder viewHolder = new NewChatAdapter.ViewHolder(rowView);
+        ChooseRecipientsAdapter.ViewHolder viewHolder = new ChooseRecipientsAdapter.ViewHolder(rowView);
+
 
         return viewHolder;
     }
 
     //Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(NewChatAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(final ViewHolder viewHolder, int position) {
+
         //Get element from your dataset at this position.
         //Replace the contents of the view with that element
 
         //Get the name of the sender from its UID
-        String contactId = filteredContactsIdList.get(position);
-        String contactName = contactsMap.get(contactId);
+        final String friendId = filteredContactsIdList.get(position);
+        String contactName = contactsMap.get(friendId);
 
-        //Update the content of the row at position
+        //Update the content of the row at position with the friend's name
         viewHolder.contactName.setText(contactName);
-        //TODO: Update contact's picture as well
+
+        //Set if the checkbox should be checked or not.
+        CheckBox checkBox = viewHolder.checkBox;
+        //Check if the check box corresponding to this friend should be checked already
+        if(onItemCheckListener.shouldBeChecked(friendId)){
+            checkBox.setChecked(true); //Then tick it.
+        }else{
+            checkBox.setChecked(false); //Else don't
+        }
+
+        // set a listener on the tick box to add and remove friends from the recipient list.
+        viewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CheckBox box = (CheckBox) view;
+
+                if (box.isChecked()) {
+                    onItemCheckListener.onItemCheck(friendId);
+                } else {
+                    onItemCheckListener.onItemUncheck(friendId);
+                }
+            }
+        });
+
     }
 }

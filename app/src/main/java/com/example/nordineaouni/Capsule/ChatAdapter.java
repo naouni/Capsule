@@ -26,6 +26,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
+import static android.R.attr.y;
+
 /**
  * Created by nordineaouni on 01/03/17.
  */
@@ -33,22 +35,19 @@ import java.util.HashMap;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     String TAG = getClass().toString();
-
-    private String conversationID;
     private ArrayList<Capsule> capsulesList;
     private HashMap<String, String> contactsList;
-
     private FirebaseAuth auth;
-    private DatabaseReference conversationsContentsRef;
-    private DatabaseReference contactsRef;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
+    /* Provide a reference to the views for each data item
+    Complex data items may need more than one view per item, and
+    you provide access to all the views for a data item in a view holder*/
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView senderTextView;
         private TextView textTextView;
+
+        //These 2 layouts are used in order to nicely display the messages insides boxes.
         private LinearLayout linearLayout;
         private LinearLayout linearLayout2;
 
@@ -64,10 +63,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public ChatAdapter(String conversationID) {
 
         capsulesList = new ArrayList<Capsule>();
-        this.conversationID = conversationID;
         auth = FirebaseAuth.getInstance();
-        conversationsContentsRef = FirebaseDatabase.getInstance().getReference().child("conversationsContents").child(auth.getCurrentUser().getUid()).child(this.conversationID);
-        contactsRef = FirebaseDatabase.getInstance().getReference().child("contacts").child(auth.getCurrentUser().getUid());
+
+        DatabaseReference conversationsContentsRef = FirebaseDatabase.getInstance().getReference()
+                .child("conversationsContents").child(auth.getCurrentUser().getUid())
+                .child(conversationID);
+
+        DatabaseReference contactsRef = FirebaseDatabase.getInstance().getReference().child("contacts")
+                .child(auth.getCurrentUser().getUid());
 
         conversationsContentsRef.addChildEventListener( new ChildEventListener() {
             @Override
@@ -79,7 +82,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
                 //Get the instance of the outer class (ChatarrayAdapter) having created this inner class (ChildEventListener)
                 ChatAdapter adapter = (ChatAdapter) ChatAdapter.this;
-                //Necessary to tell the observers of the array(i.e the recycler view) to refresh
+                //It is necessary to tell the observers of the array(i.e the recycler view) to refresh
                 adapter.notifyDataSetChanged();
             }
 
@@ -109,8 +112,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange");
                 contactsList = (HashMap<String,String>) dataSnapshot.getValue();
-                for(String contact: contactsList.values())
-                    Log.d(TAG,"Contact: " +contact );
             }
 
             @Override
@@ -121,10 +122,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     }
 
     @Override
+    public int getItemCount() {
+        return capsulesList.size();
+    }
+
+    @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         // create a new view
-        View rowView  = (View) LayoutInflater.from(parent.getContext())
+        View rowView  = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.capsule, parent, false);
         TextView text = (TextView) rowView.findViewById(R.id.txtMessage);
         TextView senderName = (TextView) rowView.findViewById(R.id.txtInfo);
@@ -132,7 +138,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         LinearLayout linearLayout =  (LinearLayout) rowView.findViewById(R.id.contentWithBackground);
         LinearLayout linearLayout2 = (LinearLayout) rowView.findViewById(R.id.content);
 
-        // Here I can set the view's size, margins, paddings and layout parameters
+        //Here I can set the view's size, margins, paddings and layout parameters
 
         ChatAdapter.ViewHolder viewHolder = new ChatAdapter.ViewHolder(rowView, senderName, text, linearLayout, linearLayout2);
 
@@ -177,6 +183,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         String openingDateString = capsule.getOpeningDate();
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date openingDate = null;
+
         try {
             //Get Date object from the date string
             openingDate = dateFormatter.parse(openingDateString);
@@ -184,26 +191,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             e1.printStackTrace();//Handle parse exception
         }
 
-        Log.d(TAG, "Today: "+todayDate.toString());
-        Log.d(TAG, "OpeningDate: "+openingDate.toString() );
-
         //Checks if date and time requirement are met
         if(todayDate.compareTo(openingDate) >= 0  ){
             //todayDate is after or equal to OpeningDate
-            //TODO: show content
             holder.senderTextView.setText(senderName);
             holder.textTextView.setText(text);
-        //Hide the capsule's content
         }else {
+            //Hide the capsule's content
             //TODO: improve the way the content is hidden
             holder.senderTextView.setText(senderName);
             holder.textTextView.setText("????????");
         }
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return capsulesList.size();
     }
 }

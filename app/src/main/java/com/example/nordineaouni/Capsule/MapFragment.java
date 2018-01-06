@@ -63,6 +63,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void onCreate(Bundle savedInstanceSate){
         super.onCreate(savedInstanceSate);
 
+        //API required to get the device's location
         googleApiClient = new GoogleApiClient.Builder(getActivity())
                 .enableAutoManage(getActivity() /* FragmentActivity */,
                         this /* OnConnectionFailedListener */)
@@ -79,7 +80,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_map, container, false);
 
-        //retriev a MapView object from the xml layout
+        //retrieve a MapView object from the xml layout
         mapView = (MapView) v.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
 
@@ -95,7 +96,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        //The foolowing line displays the +/- zoom buttons
+        //The following line displays the +/- zoom buttons
         //this.googleMap.getUiSettings().setZoomControlsEnabled(true);
     }
 
@@ -119,7 +120,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     * cases when a location is not available.
     */
      if (locationPermissionGranted) {
-         Toast.makeText(getContext(), "Got device location", Toast.LENGTH_SHORT).show();
          lastKnownLocation = LocationServices.FusedLocationApi
                  .getLastLocation(googleApiClient);
      }
@@ -131,9 +131,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
          googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                  new LatLng(lastKnownLocation.getLatitude(),
                          lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-         Toast.makeText(getContext(), "Move to DEVICE location", Toast.LENGTH_SHORT).show();
      } else {
-         Toast.makeText(getContext(), "Move to DEFAULT location", Toast.LENGTH_SHORT).show();
          Log.d(TAG, "Current location is null. Using defaults.");
          googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
          googleMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -194,7 +192,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     //Callback for the Google API Client
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Toast.makeText(getContext(), "API client: onConnected", Toast.LENGTH_SHORT).show();
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 

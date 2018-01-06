@@ -44,17 +44,6 @@
         />
 </RelativeLayout>
 
-    <DatePicker
-        android:id="@+id/datePicker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:endYear="2100"
-        android:startYear="1900"
-        android:datePickerMode="spinner"
-        android:calendarViewShown="false"
-        android:layout_weight="1" >
-    </DatePicker>
-
     <Button
         android:id = "@+id/createCapsuleButton"
         android:text ="@string/sendCapsuleButton"

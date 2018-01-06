@@ -15,10 +15,12 @@ import java.util.Calendar;
 public class TimePickerFragment extends DialogFragment
         implements TimePickerDialog.OnTimeSetListener {
 
-    ChatActivity callBack;
+    //The callBack activity has to implement the TimePickerDialog.OnTimeSetListener that contains
+    // only the method onTimeSet.
+    TimePickerDialog.OnTimeSetListener callBack;
 
-    public TimePickerFragment(ChatActivity callBack){
-
+    public TimePickerFragment(TimePickerDialog.OnTimeSetListener callBack){
+        //Attach callBack
         this.callBack = callBack;
     }
 
@@ -35,8 +37,7 @@ public class TimePickerFragment extends DialogFragment
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        // Use the callBack function to eventually send the capsule
-
-        callBack.sendCapsule(hourOfDay, minute);
+        // Use the callBack corresponding function to eventually send the capsule
+        callBack.onTimeSet(view, hourOfDay, minute);
     }
 }

@@ -16,7 +16,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -24,7 +23,10 @@ import com.google.firebase.auth.FirebaseUser;
  * Created by nordineaouni on 03/01/17.
  */
 
-public class MainActivity extends AppCompatActivity implements CapsuleFragment.CapsulePageFragmentListener, ChatsListFragment.OnChatsListClickListener, AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements
+        CapsuleFragment.CapsulePageFragmentListener,
+        ChatsListFragment.OnChatsListClickListener,
+        AdapterView.OnItemClickListener {
 
     private String TAG = getClass().toString();
 
@@ -119,6 +121,13 @@ public class MainActivity extends AppCompatActivity implements CapsuleFragment.C
         }
     }
 
+    /**
+     * This method gets called by the CapsuleFragment when a picture is taken. The fragment uses the
+     * the main activity which is also its callback as it implements the CapsulePageFragmentListener.
+     * Then it displays the picture into an imageView in the right-most fragment.
+     * NB: this method no longer works as the right-most fragment now is a map
+     * @param imageBitmap
+     */
     public void onPictureTaken(Bitmap imageBitmap){
         ImageView mImageView = (ImageView) sfpAdapter.getFragment(2).getView().findViewById(R.id.imageView);
         mImageView.setImageBitmap(imageBitmap);

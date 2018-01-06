@@ -1,5 +1,7 @@
 package com.example.nordineaouni.Capsule;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +25,6 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,14 +33,16 @@ import java.util.Date;
  * Created by nordineaouni on 01/03/17.
  */
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener  {
 
 
     private String TAG = getClass().toString();
     private EditText writeCapsuleField;
-    //Tools to get current date and
-    private final Calendar calendar = Calendar.getInstance();
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    //Tools to get current date and set the openingDate
+    private final Calendar calendarForSentDate = Calendar.getInstance();
+    private final Calendar calendarForOpeningDate = Calendar.getInstance();
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     //Capsule metadata
     String text;
     String senderId;
@@ -73,6 +78,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (! snapshot.hasChild(conversationID)) {
                     // The conversation does not exist yet (in the database). So we instantiate it.
 
+                    //TODO: are the dates correctly instantiated ? Because I may need to compare this empty String with a Date afterwards
                     String dateLastSent = "";
                     String closestOpening = "";
                     String interlocutorId = conversationID;
@@ -109,13 +115,15 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
+    //called when sendButton is clicked
     public void onSendButtonClicked(){
-        //Open date picker
+        //Open a date picker
         DialogFragment datePickerFragment = new DatePickerFragment(this);
         datePickerFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
-    public void onDateSet(int year, int month, int day){
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int day){
         //Gets the year,month and day from the date picker that used its callback's function
         this.year = year;
         this.month = month;
@@ -124,17 +132,28 @@ public class ChatActivity extends AppCompatActivity {
         timePickerFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
-    public void sendCapsule(int hourOfDay, int minute){
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute){
+        sendCapsule(hourOfDay, minute);
+    }
 
-        //Set Capsule metadata
+    /**
+     * Set Capsule metadata
+     * @param hourOfDay
+     * @param minute
+     */
+    public void sendCapsule(int hourOfDay, int minute){
         //Gets the hourOfDay and minute from the timePicker that used its callback's function
+        // onTimeSet
         text = writeCapsuleField.getText().toString();
         senderId = auth.getCurrentUser().getUid();
-        sentDate = dateFormat.format(calendar.getTime());
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day, hourOfDay, minute);
-        Date openingDate = calendar.getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        //Transform the integer representing the sent date into a human readable string
+        sentDate = dateFormat.format(calendarForSentDate.getTime());
+        //TODO: Store date as numbers
+        //Set the openingDate
+        calendarForOpeningDate.set(year, month, day, hourOfDay, minute);
+        Date openingDate = calendarForOpeningDate.getTime();
+        //Transform the integer representing the opening date into a human readable string
         String openingDateString = dateFormat.format(openingDate);
 
         //Create the new capsule
@@ -147,7 +166,11 @@ public class ChatActivity extends AppCompatActivity {
         writeCapsuleField.setText("");//reset text field's value to an empty string
     }
 
-    //Increment by 1 the number of capsule in this conversation
+    /**
+     *   Increment by 1 the number of capsules in this conversation. Make use of a transaction in
+     *   order to increment this index consistently as many calls to this node can be made almost
+     *   simultaneously. See Firebase transaction documentation.
+     */
     private void incrementNumberCapsules(DatabaseReference numberCapsulesRef) {
         numberCapsulesRef.runTransaction(new Transaction.Handler() {
             @Override
